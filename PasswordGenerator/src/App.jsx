@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -25,18 +25,36 @@ function App() {
     setPassword(password)
   }, [length, numbrs, characters, setPassword])
 
+  useEffect(()=>{
+    generatePassword()
+  }, [length, numbrs, characters, generatePassword])
+
   return (
     <>
       <h1 className='text-4xl text-center'>Password Generator</h1>
       <div className='w-full mx-w-md shadow-md p-6 mt-4 rounded-lg bg-gray-600'>
-        <input type="text" value={password} readOnly className='border border-gray-300 p-2 rounded' />
+        <div className='flex justify-center mt-4'>
+          <input type="text" value={password} readOnly className='border border-gray-300 p-2 rounded' style={{width: "25rem"}} />
+          <button className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4' onClick={(e)=>{
+              navigator.clipboard.writeText(password)
+              const button = e.target;
+              const originalText = button.innerText;
+              button.innerText = "Copied!";
+              setTimeout(() => {
+                button.innerText = originalText;
+              }, 2000);
+            }}>Copy</button>
+        </div>
+        
         <div className='flex justify-center mt-4'>
           <input
             type='range'
             min='8'
-            max='20'
+            max='40'
             value={length}
-            onChange={(e) => setLength(e.target.value)}
+            onChange={(e) => {
+              setLength(e.target.value)
+            }}
             className='border border-gray-300 p-2 rounded'
           />
           <span className='ml-2 text-orange-500 text-md mt-1'>Length ({length})</span>
@@ -45,7 +63,9 @@ function App() {
               className='mr-2'
               type='checkbox'
               checked={numbrs}
-              onChange={(e) => setNumbers(e.target.checked)}
+              onChange={(e) => {
+                setNumbers(e.target.checked)
+              }}
             />
             Include Numbers
           </label>
@@ -54,7 +74,9 @@ function App() {
               className='mr-2'
               type='checkbox'
               checked={characters}
-              onChange={(e) => setCharacters(e.target.checked)}
+              onChange={(e) => {
+                setCharacters(e.target.checked)
+              }}
             />
             Include Special Characters
           </label>
